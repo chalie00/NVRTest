@@ -94,7 +94,7 @@ test.describe('Smart Web Viewer', () => {
         await page.waitForTimeout(2000);
 
         //Login Page ScreenShot
-        await page.screenshot({ path:'../@UserFile/Screenshot.png', fullPage: true});
+        await page.screenshot({ path: '../@UserFile/Screenshot.png', fullPage: true });
 
         //Login With Correct User Info
         login(page, correctID, correctPW);
@@ -143,15 +143,34 @@ test.describe('Smart Web Viewer', () => {
         });
 
         //Click UI [i]
+        // await page.locator('#qtcanvas').click({
+        //     button: 'left',
+        //     clickCount: 2,
+        //     delay: 2000,
+        //     position: {
+        //         x: 1167,
+        //         y: 45
+        //     }
+        // });
+
         await page.locator('#qtcanvas').click({
-            button: 'left',
-            clickCount: 2,
-            delay: 2000,
             position: {
-                x: 1167,
-                y: 45
+                x: 170,
+                y: 580
             }
         });
+
+        //Wait For Smart Web Viewer
+        await page.waitForTimeout(2000);
+
+        await page.locator('#qtcanvas').click({
+            position: {
+                x: 153,
+                y: 396
+            }
+        });
+
+
 
         // //Wait For Smart Web Viewer
         // await page.waitForTimeout(2000);
