@@ -36,6 +36,29 @@ export async function timeTable_On_Off(page: Page) {
 
 }
 
+export async function leftMenuOn_Off(page: Page, canvas: string) {
+    //Left Menu Off
+    await page.locator('#qtcanvas').click({
+        position: {
+            x: 297,
+            y: 340
+        }
+    });
+
+    //Wait For Smart Web Viewer
+    await page.waitForTimeout(500);
+
+    //Left Menu On
+    await page.locator('#qtcanvas').click({
+        position: {
+            x: 11,
+            y: 340
+        }
+    });
+}
+
+
+
 export async function canvasClickWith_X_Y(page: Page, canvas: string, x: number, y: number) {
     await page.locator(canvas).click({
         position: {
@@ -54,12 +77,22 @@ export async function canvas_Double_ClickWith_X_Y(page: Page, canvas: string, x:
     })
 }
 
-export async function keyPressWithCount(page: Page, keyStr: string, count: number) {
-    for (let i = 0; i < count; i+= 1) {
-        await page.keyboard.press(keyStr);    }
+export async function mouseHoverWith_X_Y(page: Page, canvas: string, x: number, y: number) {
+    await page.locator(canvas).hover({
+        position: {
+            x: x,
+            y: y
+        }
+    })
 }
 
-export async function changeTextField(page:Page, keyStr: string) {
+export async function keyPressWithCount(page: Page, keyStr: string, count: number) {
+    for (let i = 0; i < count; i += 1) {
+        await page.keyboard.press(keyStr);
+    }
+}
+
+export async function changeTextField(page: Page, keyStr: string) {
     await page.waitForTimeout(1000);
     await page.keyboard.type(keyStr);
 }
