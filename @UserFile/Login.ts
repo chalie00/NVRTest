@@ -1,16 +1,70 @@
 
 import { test, expect, Page } from '@playwright/test';
+import { url, correctID, correctPW, wrongID, wrongPW, logintxt, logouttxt, settingtxt, realTimeMenutxt, liveCanvas, obj_SmartView, obj_Ch4 } from "../@UserFile/Constants";
 
-export async function login(page: Page, url: string, id: string, pw: string) {
+
+export async function login_OnlyFill_ID_PW(page: Page, url: string, id: string, pw: string) {
     //open Url
-    //await page.goto(url);
-    await page.goto(url, { waitUntil: 'networkidle' });
+    await page.goto(url);
+
+    //Wait Login Element
+    await page.waitForSelector('#login_id');
 
     //Typing ID
     await page.locator('input[name = login_id]').fill(id);
 
     //Typing PW
     await page.locator('input[name = login_pwd]').fill(pw);
+
+}
+
+export async function login_ClickLoginBtn(page: Page, url: string, id: string, pw: string) {
+    //open Url
+    await page.goto(url);
+
+    //Wait Login Element
+    await page.waitForSelector('#login_id');
+
+    //Typing ID
+    await page.locator('input[name = login_id]').fill(id);
+
+    //Typing PW
+    await page.locator('input[name = login_pwd]').fill(pw);
+
+    //Wait Networn Idle
+    await page.waitForLoadState('networkidle');
+
+    //Click 로그인 Button
+    await page.getByRole('button', {name: logintxt}).click();
+
+}
+
+export async function login_Move_Setting(page: Page) {
+        //open Url
+        await page.goto(url);
+
+        //Wait Login Element
+        await page.waitForSelector('#login_id');
+    
+        //Typing ID
+        await page.locator('input[name = login_id]').fill(correctID);
+    
+        //Typing PW
+        await page.locator('input[name = login_pwd]').fill(correctPW);
+    
+        //Wait Networn Idle
+        await page.waitForLoadState('networkidle');
+    
+        //Click 로그인 Button
+        await page.getByRole('button', {name: logintxt}).click();
+
+        //Wait for 설정 Menu
+        await page.getByRole('button', { name: '설정' }).waitFor({
+            state: 'visible',
+        });
+        
+        //Click the Setting Button
+        await page.getByRole('button', { name: settingtxt }).click();
 
 }
 

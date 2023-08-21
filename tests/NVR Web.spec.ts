@@ -1,86 +1,22 @@
 import { test, expect, Page } from '@playwright/test';
-import { canvasClickWith_X_Y, canvas_Double_ClickWith_X_Y, changeTextField, keyPressWithCount, leftMenuOn_Off, login, mouseHoverWith_X_Y, timeTable_On_Off } from '../@UserFile/Login';
+import { canvasClickWith_X_Y, canvas_Double_ClickWith_X_Y, changeTextField, keyPressWithCount, leftMenuOn_Off, login_OnlyFill_ID_PW, login_ClickLoginBtn, mouseHoverWith_X_Y, timeTable_On_Off, login_Move_Setting } from '../@UserFile/Login';
+import { url, correctID, correctPW, wrongID, wrongPW, logintxt, logouttxt, settingtxt, realTimeMenutxt, liveCanvas, obj_SmartView, obj_Ch4 } from "../@UserFile/Constants";
 
-//Variable of Url, ID
-let url = 'http://192.168.22.223/cgi-bin/login.cgi';
-let correctID = 'admin';
-let correctPW = '11qqaazz..';
-
-let wrongID: string = 'administrator';
-let wrongPW: string = '..zzaaqq11';
-
-//Element Position in Canvas
-const smartCanvas = '#qtcanvas';
-
-//Smart Web Viewer Canvas Position Information
-const obj_SmartView = {
-    portX: 159,
-    portY: 79,
-
-
-    added_View5_X: 775,
-    added_View5_Y: 452,
-    added_View6_X: 1120,
-    added_View6_Y: 452,
-
-    left_Menu_Off_X: 297,
-    left_Menu_Off_Y: 340,
-    left_Menu_On_X: 11,
-    left_Menu_On_Y: 340,
-
-    scr_Mode_X: 78,
-    scr_Mode_Y: 628,
-    scr_One_X: 1264,
-    scr_One_Y: 77,
-    scr_Four_X: 1262,
-    scr_Four_Y: 111,
-
-    ptz_X: 222,
-    ptz_Y: 619,
-    ptz_Spd_X: 1180,
-    ptz_Spd_Y: 629,
-    ptz_Spd_Fast_X: 1176,
-    ptz_Spd_Fast_Y: 632
-
-}
-
-//CH4 Canvas Position Information
-const obj_Ch4 = {
-    camList_X: 110,
-    camList_Y: 235,
-    cam_add_Live_X: 136,
-    cam_add_Live_Y: 245,
-    cam_add_search_X: 136,
-    cam_add_search_Y: 255,
-
-    area_DCLK_X: 922,
-    area_DCLK_Y: 413,
-    div4_Info_X: 1145,
-    div4_Info_Y: 354,
-    div1_Info_X: 1167,
-    div1_Info_Y: 45
-}
 
 /* =============================== Login Sequence  =================================== 
-    Sequence 1
-    Connect URL -> Correct Login -> ScreenShot -> Logout -> Logout
-    Condition: Use '·Î±×ÀÎ' button 
+Sequence 1
+Connect URL -> Correct Login -> ScreenShot -> Logout -> Logout
+Condition: Use 'ë¡œê·¸ì¸' button 
 
-    Sequence2
-    Connect URL -> Wrong Login -> Correct Login -> Logout
-    Condition: Use Enter Key
+Sequence2
+Connect URL -> Wrong Login -> Correct Login -> Logout
+Condition: Use Enter Key
 ===================================================================================== */
 test.describe('Login Page', () => {
     test('Login / Logout', async ({ page }) => {
         //Sequence 1
         //Login With Correct User Info
-        login(page, url, correctID, correctPW);
-
-        //Wait for URL
-        await page.waitForTimeout(2000);
-
-        //Login Click
-        await page.locator('#submit').filter({ hasText: /ë¡œê·¸?¸/ }).click();
+        login_ClickLoginBtn(page, url, correctID, correctPW);
 
         //Wait for URL
         await page.waitForTimeout(2000);
@@ -88,14 +24,12 @@ test.describe('Login Page', () => {
         //Login Page ScreenShot
         await page.screenshot({ path: './@Captured/AfterLogin.png', fullPage: true });
 
-
         //click the Logout
-        await page.getByRole('button', { name: 'ë¡œê·¸?•„?›ƒ' }).click();
-
+        await page.getByRole('button', { name: logouttxt }).click();
 
         //Sequence 2
         //Login With Wrong User Info
-        login(page, url, wrongID, wrongPW);
+        login_OnlyFill_ID_PW(page, url, wrongID, wrongPW);
 
         //Wait for URL
         await page.waitForTimeout(2000);
@@ -107,7 +41,7 @@ test.describe('Login Page', () => {
         await page.waitForTimeout(3000);
 
         //Login With Correct User Info
-        login(page, url, correctID, correctPW);
+        login_OnlyFill_ID_PW(page, url, correctID, correctPW);
 
         //Wait for URL
         await page.waitForTimeout(2000);
@@ -119,7 +53,7 @@ test.describe('Login Page', () => {
         await page.waitForTimeout(2000);
 
         //click the Logout
-        await page.getByRole('button', { name: 'ë¡œê·¸?•„?›ƒ' }).click();
+        await page.getByRole('button', { name: logouttxt }).click();
 
         //Wait for URL
         await page.waitForTimeout(1000);
@@ -128,18 +62,21 @@ test.describe('Login Page', () => {
     //Keep Browser
     //await new Promise(() => { });
 
-})//End Of Login Test
+})//End Of Login Page
 
 
-/* =============================== Move Tab Sequenc =================================== 
-    Connect URL -> Correct Login -> Move to [¼³Á¤] -> Move to [½Ç½Ã°£ ¿µ»ó]
-    Condition: Use Enter Key
+/* =============================== Live Tab Element =================================== 
+Connect URL -> Correct Login -> Live Tab
 ===================================================================================== */
-test.describe('Smart Web Viewer', () => {
-    test('Move Tab', async ({ page }) => {
+test.describe('Live Tab of Smart Web Viewer', () => {
+    /* =============================== Switch Tab Sequence =================================== 
+Connect URL -> Correct Login -> Move to [ì„¤ì •] -> Move to [ì‹¤ì‹œê°„ ì˜ìƒ]
+Condition: Use Enter Key
+===================================================================================== */
+    test('Tab Switch from Live to Setting', async ({ page }) => {
 
         //Login With Correct User Info
-        login(page, url, correctID, correctPW);
+        login_OnlyFill_ID_PW(page, url, correctID, correctPW);
 
         //Wait for URL
         await page.waitForTimeout(2000);
@@ -148,128 +85,271 @@ test.describe('Smart Web Viewer', () => {
         await page.locator('#login_pwd').press('Enter');
 
         //Wait for URL
-        await page.waitForTimeout(5000);
+        await page.waitForTimeout(3000);;
 
         //Click the Setting
-        await page.getByRole('button', { name: '¼³Á¤' }).click();
+        await page.getByRole('button', { name: settingtxt }).click();
 
         //Wait for URL
         await page.waitForTimeout(2000);
 
         //click the Real Time Stream
-        await page.getByRole('button', { name: '½Ç½Ã°£ ¿µ»ó' }).click();
+        await page.getByRole('button', { name: realTimeMenutxt }).click();
 
         //Wait for URL
         await page.waitForTimeout(1000);
 
-    })//End Of The Move Tab
+    })//End Of The Switch from Live to Setting
 
-
-    /* =============================== Smart Web Control Sequenc =================================== 
-        Connect URL -> Correct Login -> Port Text Delete -> Port Set 81 -> CH4 Full Screen 
-        -> CH4 Information On -> Full Screen Capture -> CH4 Normal Screen
+    /* =============================== Port and CH4 Control =================================== 
+    Connect URL -> Correct Login -> Port Text Delete -> Port Set 81 -> CH4 Full Screen 
+    -> CH4 Information On -> Full Screen Capture -> CH4 Normal Screen
     ============================================================================================= */
-    test('Smart Web Viewer Control The Element', async ({ page }) => {
+    test('LiveTab Control Port and CH4', async ({ page }) => {
         //Login With Correct User Info
-        login(page, url, correctID, correctPW);
+        login_ClickLoginBtn(page, url, correctID, correctPW);
+
+        //Wait for URL
+        await page.waitForTimeout(3000);;
+
+        //Web Port Typing
+        canvasClickWith_X_Y(page, liveCanvas, obj_SmartView.portX, obj_SmartView.portY);
+
+        //Wait for URL
+        await page.waitForTimeout(1000);
+
+        //Port Text Delete and Typing
+        keyPressWithCount(page, 'Backspace', 2);
+        changeTextField(page, '81');
+
+        //Wait for URL
+        await page.waitForTimeout(1000);
+
+        //Ch4 Double Click
+        canvas_Double_ClickWith_X_Y(page, liveCanvas, obj_Ch4.div4_Info_X, obj_Ch4.div4_Info_Y);
+
+        //Wait for URL
+        await page.waitForTimeout(1000);
+
+        //Click CH4 UI [i]
+        canvasClickWith_X_Y(page, liveCanvas, obj_Ch4.div1_Info_X, obj_Ch4.div1_Info_Y);
+
+        //Wait for URL
+        await page.waitForTimeout(1000);
+
+        //CH4 FullScreen and Information On -> ScreenShot
+        await page.screenshot({ path: './@Captured/CH4_Full_Info.png', fullPage: true });
+
+        //Ch4 Double Click
+        canvas_Double_ClickWith_X_Y(page, liveCanvas, obj_Ch4.div4_Info_X, obj_Ch4.div4_Info_Y);
+
+        /* =============================== Smart Web Control Sequence =================================== 
+        CH4 ë¼ì´ë¸Œ ì¶”ê°€ -> CH4 ê²€ìƒ‰/ë…¹í™” ì¬ìƒ ì¶”ê°€ -> CH4 ë¼ì´ë¸Œ ì œê±° -> CH4 ê²€ìƒ‰/ë…¹í™” ì¬ìƒ ì œê±° -> ì¢Œì¸¡ Menu On/Off
+        -> í™”ë©´ ëª¨ë“œ On/Off -> í™”ë©´ ëª¨ë“œ On -> 1í™”ë©´ -> 4í™”ë©´
+        ============================================================================================= */
+        //Wait for URL
+        await page.waitForTimeout(1000);
+
+        //Click The CH4 from Camera List
+        canvasClickWith_X_Y(page, liveCanvas, obj_Ch4.camList_X, obj_Ch4.camList_Y);
+
+        //Wait for URL
+        await page.waitForTimeout(1000);
+
+        //Add CH4 Live
+        canvasClickWith_X_Y(page, liveCanvas, obj_Ch4.cam_add_Live_X, obj_Ch4.cam_add_Live_Y);
 
         //Wait for URL
         await page.waitForTimeout(2000);
 
-        //Push the Enter Key
-        await page.locator('#login_pwd').press('Enter');
+        //Click The CH4 from Camera List
+        canvasClickWith_X_Y(page, liveCanvas, obj_Ch4.camList_X, obj_Ch4.camList_Y);
 
         //Wait for URL
-        await page.waitForTimeout(5000);
+        await page.waitForTimeout(1000);
 
-        // //Web Port Typing
-        // canvasClickWith_X_Y(page, smartCanvas, obj_SmartView.portX, obj_SmartView.portY);
+        //Add CH4 Search/Recording
+        canvasClickWith_X_Y(page, liveCanvas, obj_Ch4.cam_add_search_X, obj_Ch4.cam_add_search_Y);
 
-        // //Wait for URL
-        // await page.waitForTimeout(1000);
+        //Wait for URL
+        await page.waitForTimeout(1000);
 
-        // //Port Text Delete and Typing
-        // keyPressWithCount(page, 'Backspace', 2);
-        // changeTextField(page,'81');
+        //Delete CH4 Live
+        //One more click because view5 is not highlighted
+        canvasClickWith_X_Y(page, liveCanvas, obj_SmartView.added_View5_X, obj_SmartView.added_View5_Y);
+        await page.waitForTimeout(2000);
+        canvasClickWith_X_Y(page, liveCanvas, obj_SmartView.added_View5_X, obj_SmartView.added_View5_Y);
 
-        // //Wait for URL
-        // await page.waitForTimeout(1000);
+        //Wait for URL
+        await page.waitForTimeout(1000);
 
-        // //Ch4 Double Click
-        // canvas_Double_ClickWith_X_Y(page, smartCanvas, obj_Ch4.div4_Info_X ,obj_Ch4.div4_Info_Y);
-
-        // //Wait for URL
-        // await page.waitForTimeout(1000);
-
-        // //Click CH4 UI [i]
-        // canvasClickWith_X_Y(page, smartCanvas, obj_Ch4.div1_Info_X, obj_Ch4.div1_Info_Y);
-
-        // //Wait for URL
-        // await page.waitForTimeout(1000);
-
-        // //CH4 FullScreen and Information On -> ScreenShot
-        // await page.screenshot({ path: './@Captured/CH4_Full_Info.png', fullPage: true });
-
-        // //Ch4 Double Click
-        // canvas_Double_ClickWith_X_Y(page, smartCanvas, obj_Ch4.div4_Info_X ,obj_Ch4.div4_Info_Y);
-
-        /* =============================== Smart Web Control Sequenc =================================== 
-            CH4 ¶óÀÌºê Ãß°¡ -> CH4 °Ë»ö/³ìÈ­ Àç»ı Ãß°¡ -> CH4 ¶óÀÌºê Á¦°Å -> CH4 °Ë»ö/³ìÈ­ Àç»ı Á¦°Å -> ÁÂÃø Menu On/Off
-            -> È­¸é ¸ğµå On/Off -> È­¸é ¸ğµå On -> 1È­¸é -> 4È­¸é -> PTZ -> ¼Óµµ ºü¸£°Ô -> È­¸é ¸ğµå Off -> PTZ Off
-        ============================================================================================= */
-        // //Wait for URL
-        // await page.waitForTimeout(1000);
-
-        //Click The CH4 from Camera List
-        // canvasClickWith_X_Y(page, smartCanvas, obj_Ch4.camList_X, obj_Ch4.camList_Y);
-
-        // //Wait for URL
-        // await page.waitForTimeout(1000);
-
-        // //Add CH4 Live
-        // canvasClickWith_X_Y(page, smartCanvas, obj_Ch4.cam_add_Live_X, obj_Ch4.cam_add_Live_Y);
-
-        // //Wait for URL
-        // await page.waitForTimeout(2000);
-
-        // //Click The CH4 from Camera List
-        // canvasClickWith_X_Y(page, smartCanvas, obj_Ch4.camList_X, obj_Ch4.camList_Y);
-
-        // //Wait for URL
-        // await page.waitForTimeout(1000);
-
-        // //Add CH4 Search/Recording
-        // canvasClickWith_X_Y(page, smartCanvas, obj_Ch4.cam_add_search_X, obj_Ch4.cam_add_search_Y);
-
-        // //Wait for URL
-        // await page.waitForTimeout(1000);
-
-        // //Delete CH4 Live
-        // //One more click because view5 is not highlighted
-        // canvasClickWith_X_Y(page, smartCanvas, obj_SmartView.added_View5_X, obj_SmartView.added_View5_Y);
-        // await page.waitForTimeout(2000);
-        // canvasClickWith_X_Y(page, smartCanvas, obj_SmartView.added_View5_X, obj_SmartView.added_View5_Y);
-
-        // //Wait for URL
-        // await page.waitForTimeout(1000);
-
-        // //Delete CH4 Search/Recording
-        // mouseHoverWith_X_Y(page, smartCanvas, obj_SmartView.added_View6_X, obj_SmartView.added_View6_Y);
-        // await page.waitForTimeout(1000);
-        // canvasClickWith_X_Y(page, smartCanvas, obj_SmartView.added_View6_X, obj_SmartView.added_View6_Y);
+        //Delete CH4 Search/Recording
+        mouseHoverWith_X_Y(page, liveCanvas, obj_SmartView.added_View6_X, obj_SmartView.added_View6_Y);
+        await page.waitForTimeout(1000);
+        canvasClickWith_X_Y(page, liveCanvas, obj_SmartView.added_View6_X, obj_SmartView.added_View6_Y);
 
         //Wait for URL
         await page.waitForTimeout(1000);
 
         //Left Menu On/Off
-        leftMenuOn_Off(page, smartCanvas);
+        leftMenuOn_Off(page, liveCanvas);
 
         //Wait for URL
         await page.waitForTimeout(1000);
 
-
         //Keep Browser
         //await new Promise(() => { });
 
-    })//End Of The Smart Web Viewer Control The Element
-})
+    })//End Of The LiveTab Control Port and CH4
+
+    /* =============================== PTZ Control  =================================== 
+     Connect URL -> Correct Login -> PTZ -> ì†ë„ ë¹ ë¥´ê²Œ -> í™”ë©´ ëª¨ë“œ Off -> PTZ Off
+    ============================================================================================= */
+    test('LiveTab Control PTZ', async ({ page }) => {
+        login_ClickLoginBtn(page, url, correctID, correctPW);
+        await page.waitForTimeout(3000);;
+
+        canvasClickWith_X_Y(page, liveCanvas, obj_SmartView.ptz_X, obj_SmartView.ptz_Y);
+
+        //For Testing
+        await new Promise(() => { });
+
+    })//End Of LiveTab Control PTZ
+})//End Of Live Tab
+
+/* =============================== Setting Tab Element =================================== 
+Connect URL -> Correct Login -> Setting Tab
+===================================================================================== */
+
+test.describe('Setting Tab of Smart Web Viewer', () => {
+    /* =============================== Setting -> System -> Status =================================== 
+        Connect URL -> Correct Login -> Setting Tab -> Menu Stretch/Shrink
+       ============================================================================================= */
+
+    test('Menu Stretch and Shrink', async ({ page }) => {
+
+        login_Move_Setting(page);
+
+        await page.getByRole('button', { name: 'ë©”ë‰´ ì ‘ê¸°' }).waitFor({
+            state: 'visible',
+        })
+        await page.getByRole('button', { name: 'ë©”ë‰´ ì ‘ê¸°', exact: true }).click();
+        await page.waitForTimeout(1000);
+        await page.getByRole('button', { name: 'ë©”ë‰´ í¼ì¹˜ê¸°', exact: true }).click();
+
+        await page.waitForTimeout(1000);
+        await page.evaluate(() =>
+            document.getElementById('radioCollapse')?.click()
+        );
+
+        //For Testing
+        //await new Promise(() => { });
+    })
+
+    test('Setting > System ', async ({ page }) => {
+        /* =============================== Setting -> System -> Status =================================== 
+        Connect URL -> Correct Login -> Setting Tab -> 
+       ============================================================================================= */
+
+
+        login_ClickLoginBtn(page, url, correctID, correctPW);
+
+        await page.waitForTimeout(1000);
+        await page.getByLabel('ì‹œìŠ¤í…œ').getByText('ì‹œìŠ¤í…œ ìƒíƒœ').click();
+
+        await page.waitForTimeout(3000);
+        await page.getByLabel('ì‹œìŠ¤í…œ').getByText('ì •ë³´').click();
+
+        await page.waitForTimeout(3000);
+        await page.getByLabel('ì‹œìŠ¤í…œ').getByText('ì‚¬ìš©ì').click();
+
+        await page.waitForTimeout(3000);
+        await page.getByText('ë””ìŠ¤í”Œë ˆì´').click();
+
+        await page.waitForTimeout(2000);
+        await page.getByText('í•˜ë“œë””ìŠ¤í¬').click();
+
+        await page.waitForTimeout(2000);
+        await page.getByLabel('ì‹œìŠ¤í…œ').getByText('ì—…ê·¸ë ˆì´ë“œ').click();
+
+        await page.waitForTimeout(2000);
+        await page.getByLabel('ì‹œìŠ¤í…œ').getByText('ì„¤ì •').click();
+
+        //For Testing
+        //await new Promise(() => { });
+    })
+
+    test('Setting > Tools', async ({ page }) => {
+
+        login_Move_Setting(page);
+
+        await page.waitForTimeout(1000);
+        await page.getByRole('tab', { name: 'ì¥ì¹˜' }).click();
+
+        await page.waitForTimeout(1000);
+        await page.getByLabel('ì¥ì¹˜').getByText('ì¹´ë©”ë¼').click();
+
+        //Select Radio Button Camera 01
+        await page.waitForTimeout(1000);
+        await page.locator('id=devcam_3').check();
+
+        //Select Radio Button Camera 01
+        await page.waitForTimeout(1000);
+        await page.locator('id=devcam_0').check();
+
+
+        await page.waitForTimeout(1000);
+        await page.getByLabel('ì¥ì¹˜').getByText('ì˜¤ë””ì˜¤').click();
+
+        //Change The Audio ON/OFF
+        await page.waitForTimeout(2000);
+        await page.locator('id=audin_0').selectOption('1');
+        await page.waitForTimeout(2000);
+        await page.locator('id=audin_0').selectOption('0');
+
+        //Save The Audio Setting
+        await page.waitForTimeout(2000);
+        await page.locator('id=save_btn').click();
+
+        //Confirm Whether Save Success
+        await page.waitForTimeout(2000);
+        //await page.locator('id=msg_out').getByText('ì—…ë°ì´íŠ¸ ì„±ê³µ.')
+        await expect(page.locator('id=msg_out')).toHaveText('ì—…ë°ì´íŠ¸ ì„±ê³µ.');
+
+        //For Testing
+        //await new Promise(() => { });
+    })
+
+    test('Setting > Event', async ({ page }) => {
+        login_Move_Setting(page);
+
+        //Move To The Event
+        await page.locator('id=header_event').click();
+        await page.waitForTimeout(1000);
+
+        //Click Sensor Alarm
+        await page.getByLabel('ì´ë²¤íŠ¸').getByText('ì„¼ì„œê°ì§€').click();
+        await page.waitForTimeout(1000);
+
+        //Check All Alarm
+        await page.locator('id=noti_all').click();
+        await page.waitForTimeout(1000);
+
+        //Screen Shot and Save before Confirm whether Save Success.
+        await page.screenshot({path: './@Captured/SelectAllAlarm.png', fullPage:true});
+        await page.waitForTimeout(1000);
+        await page.locator('id=save_btn').click();
+        await expect(page.locator('id=msg_out')).toHaveText('ì—…ë°ì´íŠ¸ ì„±ê³µ.');
+
+        //For Testing
+        //await new Promise(() => { });
+
+    })
+
+
+
+
+
+
+
+})//End Of The Setting Tab
