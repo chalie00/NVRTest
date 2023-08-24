@@ -1,5 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
-import { canvasClickWith_X_Y, canvas_Double_ClickWith_X_Y, changeTextField, keyPressWithCount, leftMenuOn_Off, login_OnlyFill_ID_PW, login_ClickLoginBtn, mouseHoverWith_X_Y, timeTable_On_Off, login_Move_Setting } from '../@UserFile/Login';
+import { canvasClickWith_X_Y, canvas_Double_ClickWith_X_Y, changeTextField, keyPressWithCount, leftMenuOn_Off, login_OnlyFill_ID_PW, login_ClickLoginBtn, mouseHoverWith_X_Y, timeTable_On_Off, login_Move_Setting, countTR } from '../@UserFile/Login';
 import { url, correctID, correctPW, wrongID, wrongPW, logintxt, logouttxt, settingtxt, realTimeMenutxt, liveCanvas, obj_SmartView, obj_Ch4 } from "../@UserFile/Constants";
 
 
@@ -248,7 +248,8 @@ test.describe('Setting Tab of Smart Web Viewer', () => {
 
     test('Setting > System ', async ({ page }) => {
         /* =============================== Setting -> System -> Status =================================== 
-        Connect URL -> Correct Login -> Setting Tab -> 
+        Connect URL -> Correct Login -> Setting Tab -> System -> System Status -> Info -> user
+        -> Display -> HDD -> Upgrade -> Setting
        ============================================================================================= */
 
 
@@ -281,9 +282,12 @@ test.describe('Setting Tab of Smart Web Viewer', () => {
 
     test('Setting > Tools', async ({ page }) => {
 
+        /* ===============================        Setting -> Tool     =================================== 
+        Connect URL -> Correct Login -> Setting Tab -> System -> Tool -> Camera -> 04 -> 01 -> Audio
+        -> Camera1 Audio On -> Camera1 Audio Off -> Save -> Confirm Save
+       ============================================================================================= */
         login_Move_Setting(page);
 
-        await page.waitForTimeout(1000);
         await page.getByRole('tab', { name: '장치' }).click();
 
         await page.waitForTimeout(1000);
@@ -321,30 +325,109 @@ test.describe('Setting Tab of Smart Web Viewer', () => {
     })
 
     test('Setting > Event', async ({ page }) => {
+        /* ===============================        Setting -> Event     =================================== 
+        Connect URL -> Correct Login -> Setting Tab -> System -> Event -> Sensor -> Alarm All
+        -> ScreenShot -> Save -> Confirm Save
+       ============================================================================================= */
+
         login_Move_Setting(page);
 
         //Move To The Event
-        await page.locator('id=header_event').click();
-        await page.waitForTimeout(1000);
+            await page.locator('id=header_event').click();
+            await page.waitForTimeout(1000);
 
-        //Click Sensor Alarm
-        await page.getByLabel('이벤트').getByText('센서감지').click();
-        await page.waitForTimeout(1000);
+            //Click Sensor Alarm
+            await page.getByLabel('이벤트').getByText('센서감지').click();
+            await page.waitForTimeout(1000);
 
-        //Check All Alarm
-        await page.locator('id=noti_all').click();
-        await page.waitForTimeout(1000);
+            //Check All Alarm
+            await page.locator('id=noti_all').click();
+            await page.waitForTimeout(1000);
 
-        //Screen Shot and Save before Confirm whether Save Success.
-        await page.screenshot({path: './@Captured/SelectAllAlarm.png', fullPage:true});
-        await page.waitForTimeout(1000);
-        await page.locator('id=save_btn').click();
-        await expect(page.locator('id=msg_out')).toHaveText('업데이트 성공.');
+            //Screen Shot and Save before Confirm whether Save Success.
+            await page.screenshot({ path: './@Captured/SelectAllAlarm.png', fullPage: true });
+            await page.waitForTimeout(1000);
+            await page.locator('id=save_btn').click();
+            await expect(page.locator('id=msg_out')).toHaveText('업데이트 성공.');
 
-        //For Testing
-        //await new Promise(() => { });
+            //For Testing
+            //await new Promise(() => { });
 
-    })
+        })
+
+        test('Setting > Recording', async ({ page }) => {
+            /* ===============================        Setting -> Recording    =================================== 
+            Connect URL -> Correct Login -> Setting Tab -> System -> Recording -> Camera Management
+            -> Refrech -> ScreenShot Pop Up -> Click Confirm -> Recording Schedule -> All Check
+            -> Record Off -> Sunday All OFF -> check 0, 23 -> Vacation Edit -> Detail Edit -> 
+            -> confirm Edited content -> (abnormal)Select [추가] -> Select [변경]
+           ============================================================================================= */
+
+            login_Move_Setting(page);
+
+            //Move To The Recording
+            await page.locator('id=header_rec').click();
+            await page.waitForTimeout(1000);
+
+            //Recording Schedule -> All Check
+            await page.waitForTimeout(1000);
+            await page.getByLabel('녹화').getByText('녹화 일정').click();
+            await page.waitForTimeout(1500);
+            await page.screenshot({ path: '.@Captured/RecordiSchedule.png', fullPage: true });
+            await page.locator('id=schecam_all').check();
+
+            //Record Off -> Sunday All OFF -> check 0, 23
+            await page.waitForTimeout(1000);
+            await page.getByRole('row', { name: '녹화 OFF', exact: true }).getByRole('radio').check();
+            await page.waitForTimeout(1000);
+            await page.locator('id=week_0_0').click();
+            await page.locator('id=week_0_23').click();
+
+            await page.waitForTimeout(1000);
+            await page.getByRole('cell', { name: '센서감지', exact: true }).getByRole('radio').check();
+            await page.locator('id=week_1_1').click();
+            await page.locator('id=week_1_22').click();
+
+            await page.waitForTimeout(1000);
+            await page.mouse.wheel(500, 500);
+
+            //Vacation add and modify
+            await page.waitForTimeout(1000);
+            await page.locator('#holiday_tr_0').getByText('편집').click();
+            await page.waitForTimeout(2000);
+            await page.locator('id=holiday_desc').fill('abcdefghijklmnopq');
+            await page.waitForTimeout(2000);
+            await expect(page.locator('id=holiday_desc')).toHaveValue('abcdefghijklmnop');
+            await page.waitForTimeout(1000);
+            await page.locator('id=modify_btn').click();
+            await page.waitForTimeout(1000);
+            expect(page.getByRole('cell', { name: 'abcdefghijklmnop' }));
+
+            //Vacation No2 Delete
+            await page.waitForTimeout(1000);
+            // await page.locator('#holiday_tr_1').getByText('삭제').click();
+            const countVaca = await page.locator('id=holiday_table').locator('tr').count();
+            console.log(countVaca);
+
+            let tableCountArr: number[] = await countTR(page, 'id=holiday_table', '#holiday_tr_1', '삭제', 'tr');
+            await page.waitForTimeout(1000);
+
+            console.log(tableCountArr[0]);
+            console.log(tableCountArr[1]);
+
+            if (tableCountArr[0] == tableCountArr[1]) {
+                console.log('Fail Deleting Element');
+            } else {
+                console.log('Success Deleting element');
+                page.locator('id=save_btn').click();
+                expect(page.locator('id=msg_out')).toHaveText('업데이트 성공.');
+            }
+
+
+            //For Testing
+            await new Promise(() => { });
+
+        })
 
 
 
@@ -352,4 +435,6 @@ test.describe('Setting Tab of Smart Web Viewer', () => {
 
 
 
-})//End Of The Setting Tab
+
+
+    })//End Of The Setting Tab

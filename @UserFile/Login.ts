@@ -66,6 +66,8 @@ export async function login_Move_Setting(page: Page) {
         //Click the Setting Button
         await page.getByRole('button', { name: settingtxt }).click();
 
+        await page.waitForTimeout(1000);
+
 }
 
 export async function timeTable_On_Off(page: Page) {
@@ -149,4 +151,39 @@ export async function keyPressWithCount(page: Page, keyStr: string, count: numbe
 export async function changeTextField(page: Page, keyStr: string) {
     await page.waitForTimeout(1000);
     await page.keyboard.type(keyStr);
+}
+
+export async function countTR(page: Page, table_Lo: string ,delete_Lo: string ,delete_Btn: string, tr_Lo: string) {
+    await page.waitForTimeout(1000);
+    
+    var countBeforeDelete = 0;
+    var countAfterDelete = 0;
+    await page.waitForTimeout(1000);
+    var tableLO = (await checkText(page, table_Lo)).toString();
+    await page.waitForTimeout(1000);
+    var deleteLo = (await checkText(page, delete_Lo)).toString();
+    await page.locator(tableLO).locator('tr').count().then(function(size){
+        countBeforeDelete = size;
+    });
+
+    //Push a Delete BTN
+    await page.locator(deleteLo).getByText(delete_Btn).click();
+    await page.locator(tableLO).locator('tr').count().then(function(size) {
+        countAfterDelete = size;
+    })
+
+    return [countBeforeDelete, countAfterDelete];
+}
+
+export async function checkText(page: Page, text: string) {
+    var editedTxt = "";
+    if(text.includes('id')) {
+        editedTxt = text
+    } else {
+        editedTxt = '#' + text;
+    }
+   
+    editedTxt.toString();
+    console.log(editedTxt);
+    return editedTxt;
 }
