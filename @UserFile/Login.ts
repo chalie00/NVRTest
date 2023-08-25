@@ -1,6 +1,6 @@
 
 import { test, expect, Page } from '@playwright/test';
-import { url, correctID, correctPW, wrongID, wrongPW, logintxt, logouttxt, settingtxt, realTimeMenutxt, liveCanvas, obj_SmartView, obj_Ch4 } from "../@UserFile/Constants";
+import { url, correctID, correctPW, wrongID, wrongPW, logintxt, logouttxt, settingtxt, realTimeMenutxt, liveCanvas, obj_SmartView, obj_Ch4, upperCharGroup, lowerCharGroup, numberGroup, specialCharGroup } from "../@UserFile/Constants";
 
 
 export async function login_OnlyFill_ID_PW(page: Page, url: string, id: string, pw: string) {
@@ -35,38 +35,38 @@ export async function login_ClickLoginBtn(page: Page, url: string, id: string, p
     await page.waitForLoadState('networkidle');
 
     //Click 로그인 Button
-    await page.getByRole('button', {name: logintxt}).click();
+    await page.getByRole('button', { name: logintxt }).click();
 
 }
 
 export async function login_Move_Setting(page: Page) {
-        //open Url
-        await page.goto(url);
+    //open Url
+    await page.goto(url);
 
-        //Wait Login Element
-        await page.waitForSelector('#login_id');
-    
-        //Typing ID
-        await page.locator('input[name = login_id]').fill(correctID);
-    
-        //Typing PW
-        await page.locator('input[name = login_pwd]').fill(correctPW);
-    
-        //Wait Networn Idle
-        await page.waitForLoadState('networkidle');
-    
-        //Click 로그인 Button
-        await page.getByRole('button', {name: logintxt}).click();
+    //Wait Login Element
+    await page.waitForSelector('#login_id');
 
-        //Wait for 설정 Menu
-        await page.getByRole('button', { name: '설정' }).waitFor({
-            state: 'visible',
-        });
-        
-        //Click the Setting Button
-        await page.getByRole('button', { name: settingtxt }).click();
+    //Typing ID
+    await page.locator('input[name = login_id]').fill(correctID);
 
-        await page.waitForTimeout(1000);
+    //Typing PW
+    await page.locator('input[name = login_pwd]').fill(correctPW);
+
+    //Wait Networn Idle
+    await page.waitForLoadState('networkidle');
+
+    //Click 로그인 Button
+    await page.getByRole('button', { name: logintxt }).click();
+
+    //Wait for 설정 Menu
+    await page.getByRole('button', { name: '설정' }).waitFor({
+        state: 'visible',
+    });
+
+    //Click the Setting Button
+    await page.getByRole('button', { name: settingtxt }).click();
+
+    await page.waitForTimeout(1000);
 
 }
 
@@ -153,22 +153,26 @@ export async function changeTextField(page: Page, keyStr: string) {
     await page.keyboard.type(keyStr);
 }
 
-export async function countTR(page: Page, table_Lo: string ,delete_Lo: string ,delete_Btn: string, tr_Lo: string) {
-    await page.waitForTimeout(1000);
+export async function deleteTxtAfterDClick(page: Page, inputLo: string, inputTxt: string) {
     
+}
+
+export async function countTR(page: Page, table_Lo: string, delete_Lo: string, delete_Btn: string, tr_Lo: string) {
+    await page.waitForTimeout(1000);
+
     var countBeforeDelete = 0;
     var countAfterDelete = 0;
     await page.waitForTimeout(1000);
     var tableLO = (await checkText(page, table_Lo)).toString();
     await page.waitForTimeout(1000);
     var deleteLo = (await checkText(page, delete_Lo)).toString();
-    await page.locator(tableLO).locator('tr').count().then(function(size){
+    await page.locator(tableLO).locator('tr').count().then(function (size) {
         countBeforeDelete = size;
     });
 
     //Push a Delete BTN
     await page.locator(deleteLo).getByText(delete_Btn).click();
-    await page.locator(tableLO).locator('tr').count().then(function(size) {
+    await page.locator(tableLO).locator('tr').count().then(function (size) {
         countAfterDelete = size;
     })
 
@@ -176,14 +180,43 @@ export async function countTR(page: Page, table_Lo: string ,delete_Lo: string ,d
 }
 
 export async function checkText(page: Page, text: string) {
-    var editedTxt = "";
-    if(text.includes('id')) {
+    var editedTxt = '';
+    if (text.includes('id')) {
         editedTxt = text
     } else {
         editedTxt = '#' + text;
     }
-   
+
     editedTxt.toString();
     console.log(editedTxt);
     return editedTxt;
+}
+
+export async function randomText(page: Page, len: number) {
+    let resutl = '';
+    let upperCase = '';
+    let lowerCase = '';
+    let calLength = (len - 2) % 2;
+    let charlength = upperCharGroup.length;
+
+    if (calLength == 0) {
+        let loopLength = (len -2)  / 2;
+        for (let i = 0; i < loopLength; i++) {
+            upperCase += upperCharGroup.charAt(Math.floor(Math.random() * charlength));
+            lowerCase += lowerCharGroup.charAt(Math.floor(Math.random() * charlength));
+        }
+    } else {
+        let loopLength = Math.floor((len - 2) / 2)
+        for (let i = 0; i < loopLength; i++) {
+            upperCase += upperCharGroup.charAt(Math.floor(Math.random() * charlength));
+            lowerCase += lowerCharGroup.charAt(Math.floor(Math.random() * charlength));
+        }
+        upperCase += upperCharGroup.charAt(Math.floor(Math.random() * charlength));
+    }
+
+    resutl += numberGroup.charAt(Math.floor(Math.random() * numberGroup.length));
+    resutl += specialCharGroup.charAt(Math.floor(Math.random() * specialCharGroup.length));
+    resutl += upperCase + lowerCase;
+
+    return resutl;
 }

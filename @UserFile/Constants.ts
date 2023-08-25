@@ -1,20 +1,28 @@
 import { test, expect, Page } from '@playwright/test';
 
 //Variable of Url, ID
-export let url = 'http://192.168.22.223/cgi-bin/login.cgi';
-export let correctID = 'admin';
-export let correctPW = '11qqaazz..';
+export const url = 'http://192.168.22.223/cgi-bin/login.cgi';
+export const correctID = 'admin';
+export const correctPW = '11qqaazz..';
 
 export let wrongID: string = 'administrator';
 export let wrongPW: string = '..zzaaqq11';
 
-//Element Name
-export let logintxt = '로그인';
-export let logouttxt = '로그 아웃';
-export let settingtxt = '설정';
-export let realTimeMenutxt = '실시간 영상';
-export let liveCanvas = '#qtcanvas';
+//Attachment name
+export let upgradeFileName = "MAC IP.png";
 
+//Element Name
+export const logintxt = '로그인';
+export const logouttxt = '로그아웃';
+export const settingtxt = '설정';
+export const realTimeMenutxt = '실시간 영상';
+export const liveCanvas = '#qtcanvas';
+
+//Input Text Combination
+export const upperCharGroup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+export const lowerCharGroup = 'abcdefghijklmnopqrstuvwxyz';
+export const numberGroup = '1234567890';
+export const specialCharGroup = '~!@#$%^&*()_+-=/?';
 
 
 //Smart Web Viewer Canvas Position Information

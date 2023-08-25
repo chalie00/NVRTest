@@ -1,6 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
-import { canvasClickWith_X_Y, canvas_Double_ClickWith_X_Y, changeTextField, keyPressWithCount, leftMenuOn_Off, login_OnlyFill_ID_PW, login_ClickLoginBtn, mouseHoverWith_X_Y, timeTable_On_Off, login_Move_Setting, countTR } from '../@UserFile/Login';
-import { url, correctID, correctPW, wrongID, wrongPW, logintxt, logouttxt, settingtxt, realTimeMenutxt, liveCanvas, obj_SmartView, obj_Ch4 } from "../@UserFile/Constants";
+import { canvasClickWith_X_Y, canvas_Double_ClickWith_X_Y, changeTextField, keyPressWithCount, leftMenuOn_Off, login_OnlyFill_ID_PW, login_ClickLoginBtn, mouseHoverWith_X_Y, timeTable_On_Off, login_Move_Setting, countTR, randomText } from '../@UserFile/Login';
+import { url, correctID, correctPW, wrongID, wrongPW, logintxt, logouttxt, settingtxt, realTimeMenutxt, liveCanvas, obj_SmartView, obj_Ch4, upgradeFileName } from "../@UserFile/Constants";
 
 
 /* =============================== Login Sequence  =================================== 
@@ -155,7 +155,7 @@ Condition: Use Enter Key
 
         //Wait for URL
         await page.waitForTimeout(1000);
-
+        
         //Add CH4 Live
         canvasClickWith_X_Y(page, liveCanvas, obj_Ch4.cam_add_Live_X, obj_Ch4.cam_add_Live_Y);
 
@@ -253,7 +253,7 @@ test.describe('Setting Tab of Smart Web Viewer', () => {
        ============================================================================================= */
 
 
-        login_ClickLoginBtn(page, url, correctID, correctPW);
+        login_Move_Setting(page);
 
         await page.waitForTimeout(1000);
         await page.getByLabel('시스템').getByText('시스템 상태').click();
@@ -273,10 +273,14 @@ test.describe('Setting Tab of Smart Web Viewer', () => {
         await page.waitForTimeout(2000);
         await page.getByLabel('시스템').getByText('업그레이드').click();
 
+        //[파일선택] -> 파일 첨부
+        await page.waitForTimeout(1000);
+        await page.locator('id=upgr_file').setInputFiles('/Users/chalie/Downloads/'+upgradeFileName);
+
         await page.waitForTimeout(2000);
         await page.getByLabel('시스템').getByText('설정').click();
 
-        //For Testing
+        //For Testing /Users/chalie/Downloads
         //await new Promise(() => { });
     })
 
@@ -361,6 +365,8 @@ test.describe('Setting Tab of Smart Web Viewer', () => {
             -> Refrech -> ScreenShot Pop Up -> Click Confirm -> Recording Schedule -> All Check
             -> Record Off -> Sunday All OFF -> check 0, 23 -> Vacation Edit -> Detail Edit -> 
             -> confirm Edited content -> (abnormal)Select [추가] -> Select [변경]
+            -> Vacation2 Delete -> confirm whether delete the Itme -> Pass deleteing Item
+            -> Save BTN Click
            ============================================================================================= */
 
             login_Move_Setting(page);
@@ -423,17 +429,10 @@ test.describe('Setting Tab of Smart Web Viewer', () => {
                 expect(page.locator('id=msg_out')).toHaveText('업데이트 성공.');
             }
 
-
             //For Testing
-            await new Promise(() => { });
+            //await new Promise(() => { });
 
         })
-
-
-
-
-
-
 
 
 
