@@ -1,6 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
-import { canvasClickWith_X_Y, canvas_Double_ClickWith_X_Y, changeTextField, keyPressWithCount, leftMenuOn_Off, login_OnlyFill_ID_PW, login_ClickLoginBtn, mouseHoverWith_X_Y, timeTable_On_Off, login_Move_Setting, countTR, randomText } from '../@UserFile/Login';
-import { url, correctID, correctPW, wrongID, wrongPW, logintxt, logouttxt, settingtxt, realTimeMenutxt, liveCanvas, obj_SmartView, obj_Ch4, upgradeFileName } from "../@UserFile/Constants";
+import { canvasClickWith_X_Y, canvas_Double_ClickWith_X_Y, changeTextField, keyPressWithCount, leftMenuOn_Off, login_OnlyFill_ID_PW, login_ClickLoginBtn, mouseHoverWith_X_Y, timeTable_On_Off, login_Move_Setting, countTR, randomText, delete_InputTxtAfterDClick, generateMinMaxfromNumber, selectCalendarDate } from '../@UserFile/Login';
+import { url, correctID, correctPW, wrongID, wrongPW, logintxt, logouttxt, settingtxt, realTimeMenutxt, liveCanvas, obj_SmartView, obj_Ch4, upgradeFileName, poeCount } from "../@UserFile/Constants";
 
 
 /* =============================== Login Sequence  =================================== 
@@ -155,7 +155,7 @@ Condition: Use Enter Key
 
         //Wait for URL
         await page.waitForTimeout(1000);
-        
+
         //Add CH4 Live
         canvasClickWith_X_Y(page, liveCanvas, obj_Ch4.cam_add_Live_X, obj_Ch4.cam_add_Live_Y);
 
@@ -275,7 +275,7 @@ test.describe('Setting Tab of Smart Web Viewer', () => {
 
         //[파일선택] -> 파일 첨부
         await page.waitForTimeout(1000);
-        await page.locator('id=upgr_file').setInputFiles('/Users/chalie/Downloads/'+upgradeFileName);
+        await page.locator('id=upgr_file').setInputFiles('/Users/chalie/Downloads/' + upgradeFileName);
 
         await page.waitForTimeout(2000);
         await page.getByLabel('시스템').getByText('설정').click();
@@ -337,103 +337,197 @@ test.describe('Setting Tab of Smart Web Viewer', () => {
         login_Move_Setting(page);
 
         //Move To The Event
-            await page.locator('id=header_event').click();
-            await page.waitForTimeout(1000);
+        await page.locator('id=header_event').click();
+        await page.waitForTimeout(1000);
 
-            //Click Sensor Alarm
-            await page.getByLabel('이벤트').getByText('센서감지').click();
-            await page.waitForTimeout(1000);
+        //Click Sensor Alarm
+        await page.getByLabel('이벤트').getByText('센서감지').click();
+        await page.waitForTimeout(1000);
 
-            //Check All Alarm
-            await page.locator('id=noti_all').click();
-            await page.waitForTimeout(1000);
+        //Check All Alarm
+        await page.locator('id=noti_all').click();
+        await page.waitForTimeout(1000);
 
-            //Screen Shot and Save before Confirm whether Save Success.
-            await page.screenshot({ path: './@Captured/SelectAllAlarm.png', fullPage: true });
-            await page.waitForTimeout(1000);
-            await page.locator('id=save_btn').click();
-            await expect(page.locator('id=msg_out')).toHaveText('업데이트 성공.');
+        //Screen Shot and Save before Confirm whether Save Success.
+        await page.screenshot({ path: './@Captured/SelectAllAlarm.png', fullPage: true });
+        await page.waitForTimeout(1000);
+        await page.locator('id=save_btn').click();
+        await expect(page.locator('id=msg_out')).toHaveText('업데이트 성공.');
 
-            //For Testing
-            //await new Promise(() => { });
+        //For Testing
+        //await new Promise(() => { });
 
-        })
+    })
 
-        test('Setting > Recording', async ({ page }) => {
-            /* ===============================        Setting -> Recording    =================================== 
-            Connect URL -> Correct Login -> Setting Tab -> System -> Recording -> Camera Management
-            -> Refrech -> ScreenShot Pop Up -> Click Confirm -> Recording Schedule -> All Check
-            -> Record Off -> Sunday All OFF -> check 0, 23 -> Vacation Edit -> Detail Edit -> 
-            -> confirm Edited content -> (abnormal)Select [추가] -> Select [변경]
-            -> Vacation2 Delete -> confirm whether delete the Itme -> Pass deleteing Item
-            -> Save BTN Click
-           ============================================================================================= */
+    test('Setting > Recording', async ({ page }) => {
+        /* ===============================        Setting -> Recording    =================================== 
+        Connect URL -> Correct Login -> Setting Tab -> System -> Recording -> Camera Management
+        -> Refrech -> ScreenShot Pop Up -> Click Confirm -> Recording Schedule -> All Check
+        -> Record Off -> Sunday All OFF -> check 0, 23 -> Vacation Edit -> Detail Edit -> 
+        -> confirm Edited content -> (abnormal)Select [추가] -> Select [변경]
+        -> Vacation2 Delete -> confirm whether delete the Itme -> Pass deleteing Item
+        -> Save BTN Click
+       ============================================================================================= */
 
-            login_Move_Setting(page);
+        login_Move_Setting(page);
 
-            //Move To The Recording
-            await page.locator('id=header_rec').click();
-            await page.waitForTimeout(1000);
+        //Move To The Recording
+        await page.locator('id=header_rec').click();
+        await page.waitForTimeout(1000);
 
-            //Recording Schedule -> All Check
-            await page.waitForTimeout(1000);
-            await page.getByLabel('녹화').getByText('녹화 일정').click();
-            await page.waitForTimeout(1500);
-            await page.screenshot({ path: '.@Captured/RecordiSchedule.png', fullPage: true });
-            await page.locator('id=schecam_all').check();
+        //Recording Schedule -> All Check
+        await page.waitForTimeout(1000);
+        await page.getByLabel('녹화').getByText('녹화 일정').click();
+        await page.waitForTimeout(1500);
+        await page.screenshot({ path: '.@Captured/RecordiSchedule.png', fullPage: true });
+        await page.locator('id=schecam_all').check();
 
-            //Record Off -> Sunday All OFF -> check 0, 23
-            await page.waitForTimeout(1000);
-            await page.getByRole('row', { name: '녹화 OFF', exact: true }).getByRole('radio').check();
-            await page.waitForTimeout(1000);
-            await page.locator('id=week_0_0').click();
-            await page.locator('id=week_0_23').click();
+        //Record Off -> Sunday All OFF -> check 0, 23
+        await page.waitForTimeout(1000);
+        await page.getByRole('row', { name: '녹화 OFF', exact: true }).getByRole('radio').check();
+        await page.waitForTimeout(1000);
+        await page.locator('id=week_0_0').click();
+        await page.locator('id=week_0_23').click();
 
-            await page.waitForTimeout(1000);
-            await page.getByRole('cell', { name: '센서감지', exact: true }).getByRole('radio').check();
-            await page.locator('id=week_1_1').click();
-            await page.locator('id=week_1_22').click();
+        await page.waitForTimeout(1000);
+        await page.getByRole('cell', { name: '센서감지', exact: true }).getByRole('radio').check();
+        await page.locator('id=week_1_1').click();
+        await page.locator('id=week_1_22').click();
 
-            await page.waitForTimeout(1000);
-            await page.mouse.wheel(500, 500);
+        await page.waitForTimeout(1000);
+        await page.mouse.wheel(500, 500);
 
-            //Vacation add and modify
-            await page.waitForTimeout(1000);
-            await page.locator('#holiday_tr_0').getByText('편집').click();
-            await page.waitForTimeout(2000);
-            await page.locator('id=holiday_desc').fill('abcdefghijklmnopq');
-            await page.waitForTimeout(2000);
-            await expect(page.locator('id=holiday_desc')).toHaveValue('abcdefghijklmnop');
-            await page.waitForTimeout(1000);
-            await page.locator('id=modify_btn').click();
-            await page.waitForTimeout(1000);
-            expect(page.getByRole('cell', { name: 'abcdefghijklmnop' }));
+        //Vacation add and modify
+        await page.waitForTimeout(1000);
+        await page.locator('#holiday_tr_0').getByText('편집').click();
+        await page.waitForTimeout(2000);
+        await page.locator('id=holiday_desc').fill('abcdefghijklmnopq');
+        await page.waitForTimeout(2000);
+        expect(page.locator('id=holiday_desc')).toHaveValue('abcdefghijklmnop');
+        await page.waitForTimeout(1000);
+        await page.locator('id=modify_btn').click();
+        await page.waitForTimeout(1000);
+        expect(page.getByRole('cell', { name: "abcdefghijklmnop" })).toHaveText('abcdefghijklmnop');
 
-            //Vacation No2 Delete
-            await page.waitForTimeout(1000);
-            // await page.locator('#holiday_tr_1').getByText('삭제').click();
-            const countVaca = await page.locator('id=holiday_table').locator('tr').count();
-            console.log(countVaca);
+        //Vacation No2 Delete
+        await page.waitForTimeout(1000);
+        // await page.locator('#holiday_tr_1').getByText('삭제').click();
+        const countVaca = await page.locator('id=holiday_table').locator('tr').count();
+        console.log(countVaca);
 
-            let tableCountArr: number[] = await countTR(page, 'id=holiday_table', '#holiday_tr_1', '삭제', 'tr');
-            await page.waitForTimeout(1000);
+        let tableCountArr: number[] = await countTR(page, 'id=holiday_table', '#holiday_tr_1', '삭제', 'tr');
+        await page.waitForTimeout(1000);
 
-            console.log(tableCountArr[0]);
-            console.log(tableCountArr[1]);
+        console.log(tableCountArr[0]);
+        console.log(tableCountArr[1]);
 
-            if (tableCountArr[0] == tableCountArr[1]) {
-                console.log('Fail Deleting Element');
-            } else {
-                console.log('Success Deleting element');
-                page.locator('id=save_btn').click();
-                expect(page.locator('id=msg_out')).toHaveText('업데이트 성공.');
-            }
+        if (tableCountArr[0] == tableCountArr[1]) {
+            console.log('Fail Deleting Element');
+        } else {
+            console.log('Success Deleting element');
+            page.locator('id=save_btn').click();
+            expect(page.locator('id=msg_out')).toHaveText('업데이트 성공.');
+        }
 
-            //For Testing
-            //await new Promise(() => { });
+        await page.waitForTimeout(1000);
 
-        })
+        //For Testing
+        //await new Promise(() => { });
+
+    })
+
+    test('Setting -> Network', async ({ page }) => {
+        /* ===============================        Setting -> Network    =================================== 
+        Connect URL -> Correct Login -> Setting Tab -> Network Tab -> RTSP Port 변경 -> Save
+        -> IP Address 확인 -> POE 상태 선택 -> POE1 ~ 4 상태 확인
+       ============================================================================================= */
+
+        login_Move_Setting(page);
+
+        //Move Network Tab
+        await page.locator('id=header_network').click();
+        await page.getByLabel('네트워크').getByText('네트워크').click();
+
+        await page.waitForTimeout(1000);
+        await delete_InputTxtAfterDClick(page, 'rtsp_port', '7554');
+
+        await page.waitForTimeout(1000);
+        await page.locator('id=save_btn').click();
+        expect(page.locator('id=msg_out')).toHaveText('업데이트 성공.');
+
+        await page.waitForTimeout(1000);
+        expect(page.locator('id=ip_addr')).toHaveValue('192.168.22.223');
+
+        await page.waitForTimeout(1000);
+        await page.locator('id=poe_bandwidth_status_btn').click();
+
+        await page.waitForLoadState('networkidle');
+        let poeCountResult = 0;
+        await page.locator('id=bandwidth_status_result').locator('tr').count().then(function (size) {
+            poeCountResult = size;
+        });
+
+        if (poeCount == poeCountResult) {
+            await expect(page.getByRole('cell', { name: '자동(보통)', exact: true }).nth(0)).toHaveText('자동(보통)');
+            await expect(page.getByRole('cell', { name: '자동(보통)', exact: true }).nth(1)).toHaveText('자동(보통)');
+            await expect(page.getByRole('cell', { name: '자동(보통)', exact: true }).nth(2)).toHaveText('자동(보통)');
+            await expect(page.getByRole('cell', { name: '자동(보통)', exact: true }).nth(3)).toHaveText('자동(보통)');
+            console.log('POE Status is Normal');
+        } else {
+            console.log('POE Count is Fail');
+        }
+
+        //For Testing
+        //wait new Promise(() => { });
+
+    })
+
+    test('Setting -> Log', async ({ page }) => {
+        /* ===============================        Setting -> Log   =================================== 
+        Connect URL -> Correct Login -> Setting Tab -> Log Tab -> 시스템 로그 -> 달력 선택
+        -> 년도 최소, 최대 선택 -> 
+        ============================================================================================= */
+        await login_Move_Setting(page);
+
+        await page.locator('id=header_log').click();
+        await page.getByLabel('로그').getByText('시스템 로그').click();
+
+        let dateArr: number[] = await selectCalendarDate(page);
+        
+        await page.locator('id=search_date').click();
+        await page.waitForTimeout(1000);
+
+        //Select Year 
+        await page.locator('.ui-datepicker-year').click();
+        await page.waitForTimeout(1000);
+        await page.locator('.ui-datepicker-year').selectOption(dateArr[0].toString());
+        await page.waitForTimeout(1000);
+        await page.locator('.ui-datepicker-year').click();
+        await page.locator('.ui-datepicker-year').selectOption(dateArr[2].toString());
+
+        //Select Month 
+        await page.waitForTimeout(1000);
+        await page.locator('.ui-datepicker-month').click();
+        await page.waitForTimeout(1000);
+        await page.locator('.ui-datepicker-month').selectOption(dateArr[3].toString());
+        await page.waitForTimeout(1000);
+        await page.locator('.ui-datepicker-month').selectOption(dateArr[5].toString());
+
+        //Select Day 
+        await page.waitForTimeout(1000);
+        await page.getByRole('link', {name: dateArr[6].toString()}).click();
+        await page.waitForTimeout(1000);
+        await page.locator('id=search_date').click();
+        await page.waitForTimeout(1000);
+        await page.getByRole('link', {name: dateArr[8].toString()}).click();
+        await page.waitForTimeout(1000);
+
+        //For Testing
+        //wait new Promise(() => { });
+    })
 
 
 
-    })//End Of The Setting Tab
+
+
+})//End Of The Setting Tab

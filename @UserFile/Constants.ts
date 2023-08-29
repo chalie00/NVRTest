@@ -1,5 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
 
+/* ===============================        실시간 영상 Tab    ===================================*/
 //Variable of Url, ID
 export const url = 'http://192.168.22.223/cgi-bin/login.cgi';
 export const correctID = 'admin';
@@ -8,21 +9,12 @@ export const correctPW = '11qqaazz..';
 export let wrongID: string = 'administrator';
 export let wrongPW: string = '..zzaaqq11';
 
-//Attachment name
-export let upgradeFileName = "MAC IP.png";
-
 //Element Name
 export const logintxt = '로그인';
 export const logouttxt = '로그아웃';
 export const settingtxt = '설정';
 export const realTimeMenutxt = '실시간 영상';
 export const liveCanvas = '#qtcanvas';
-
-//Input Text Combination
-export const upperCharGroup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-export const lowerCharGroup = 'abcdefghijklmnopqrstuvwxyz';
-export const numberGroup = '1234567890';
-export const specialCharGroup = '~!@#$%^&*()_+-=/?';
 
 
 //Smart Web Viewer Canvas Position Information
@@ -72,3 +64,22 @@ export const obj_Ch4 = {
     div1_Info_X: 1167,
     div1_Info_Y: 45
 }
+
+
+
+
+/* ===============================        설정 Tab    ===================================*/
+
+//Input Text Combination
+export const upperCharGroup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+export const lowerCharGroup = 'abcdefghijklmnopqrstuvwxyz';
+export const numberGroup = '1234567890';
+export const specialCharGroup = '~!@#$%^&*()_+-=/?';
+
+//Attachment name
+export let upgradeFileName = "MAC IP.png";
+
+//POE Port Count
+export let poeCount = 4;
+
+

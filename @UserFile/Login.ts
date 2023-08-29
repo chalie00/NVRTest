@@ -153,8 +153,17 @@ export async function changeTextField(page: Page, keyStr: string) {
     await page.keyboard.type(keyStr);
 }
 
-export async function deleteTxtAfterDClick(page: Page, inputLo: string, inputTxt: string) {
+export async function delete_InputTxtAfterDClick(page: Page, targetLo: string, inputTxt: string) {
+    let targetLocator: string = (await checkText(page, targetLo)).toString();
+    await page.waitForTimeout(1000);
+    await page.locator(targetLocator).click({
+        clickCount: 2,
+    })
     
+    keyPressWithCount(page, 'Backspace', 2);
+    await page.waitForTimeout(1000);
+
+    await page.locator(targetLocator).fill(inputTxt);
 }
 
 export async function countTR(page: Page, table_Lo: string, delete_Lo: string, delete_Btn: string, tr_Lo: string) {
@@ -188,7 +197,6 @@ export async function checkText(page: Page, text: string) {
     }
 
     editedTxt.toString();
-    console.log(editedTxt);
     return editedTxt;
 }
 
@@ -219,4 +227,42 @@ export async function randomText(page: Page, len: number) {
     resutl += upperCase + lowerCase;
 
     return resutl;
+}
+
+export async function generateMinMaxfromNumber(page: Page, inputNum: number, range: number) {
+    let minStr = '';
+    let maxStr = '';
+
+    minStr = (inputNum - range).toString();
+    maxStr = (inputNum + range).toString();
+
+    return [minStr, maxStr];
+}
+
+export async function selectCalendarDate(page: Page) {
+    let newDate = new Date();
+    let resutnDateArr: number[] = [];
+
+    for (let i = 0; i < 3; i++) {
+        let years = [newDate.getFullYear() - 1, newDate.getFullYear(), newDate.getFullYear() + 1];
+        resutnDateArr.push(years[i]);
+    }
+
+    if (newDate.getMonth() > 1) {
+        let months = [newDate.getMonth() - 1, newDate.getMonth(), newDate.getMonth() + 1];
+        resutnDateArr.push(months[0], months[1], months[2]);
+    } else {
+        let months = [12, newDate.getMonth(), 2];
+        resutnDateArr.push(months[0], months[1], months[2]);
+    }
+
+    if (newDate.getDate() > 1) {
+        let days = [newDate.getDate() - 1, newDate.getDate(), newDate.getDate() + 1];
+        resutnDateArr.push(days[0], days[1], days[2]);
+    } else {
+        let days = [30, newDate.getDate(), 2];
+        resutnDateArr.push(days[0], days[1], days[2]);
+    }
+    
+    return resutnDateArr;
 }
