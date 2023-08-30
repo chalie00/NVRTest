@@ -1,5 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
-import { canvasClickWith_X_Y, canvas_Double_ClickWith_X_Y, changeTextField, keyPressWithCount, leftMenuOn_Off, login_OnlyFill_ID_PW, login_ClickLoginBtn, mouseHoverWith_X_Y, timeTable_On_Off, login_Move_Setting, countTR, randomText, delete_InputTxtAfterDClick, generateMinMaxfromNumber, selectCalendarDate } from '../@UserFile/Login';
+import { canvasClickWith_X_Y, canvas_Double_ClickWith_X_Y, changeTextField, keyPressWithCount, leftMenuOn_Off, login_OnlyFill_ID_PW, login_ClickLoginBtn, mouseHoverWith_X_Y, timeTable_On_Off, login_Move_Setting, countTR, randomText, delete_InputTxtAfterDClick, generateMinMaxfromNumber, selectCalendarDate, check_Number_Logs } from '../@UserFile/Login';
 import { url, correctID, correctPW, wrongID, wrongPW, logintxt, logouttxt, settingtxt, realTimeMenutxt, liveCanvas, obj_SmartView, obj_Ch4, upgradeFileName, poeCount } from "../@UserFile/Constants";
 
 
@@ -485,7 +485,8 @@ test.describe('Setting Tab of Smart Web Viewer', () => {
     test('Setting -> Log', async ({ page }) => {
         /* ===============================        Setting -> Log   =================================== 
         Connect URL -> Correct Login -> Setting Tab -> Log Tab -> 시스템 로그 -> 달력 선택
-        -> 년도 최소, 최대 선택 -> 
+        -> 작년, 내년 선택 -> 전달, 다음달 선택 -> 어제, 내일 선택 -> 검색 -> 내보내기
+        -> VCA -> 검샋 -> 내보내기 -> 메뉴 숨기기 -> 메뉴 보이기
         ============================================================================================= */
         await login_Move_Setting(page);
 
@@ -493,41 +494,59 @@ test.describe('Setting Tab of Smart Web Viewer', () => {
         await page.getByLabel('로그').getByText('시스템 로그').click();
 
         let dateArr: number[] = await selectCalendarDate(page);
-        
+
         await page.locator('id=search_date').click();
         await page.waitForTimeout(1000);
 
         //Select Year 
         await page.locator('.ui-datepicker-year').click();
         await page.waitForTimeout(1000);
-        await page.locator('.ui-datepicker-year').selectOption(dateArr[0].toString());
+        await page.locator('.ui-datepicker-year').selectOption(dateArr[2].toString());
         await page.waitForTimeout(1000);
         await page.locator('.ui-datepicker-year').click();
-        await page.locator('.ui-datepicker-year').selectOption(dateArr[2].toString());
+        await page.locator('.ui-datepicker-year').selectOption(dateArr[1].toString());
 
         //Select Month 
         await page.waitForTimeout(1000);
         await page.locator('.ui-datepicker-month').click();
         await page.waitForTimeout(1000);
-        await page.locator('.ui-datepicker-month').selectOption(dateArr[3].toString());
-        await page.waitForTimeout(1000);
         await page.locator('.ui-datepicker-month').selectOption(dateArr[5].toString());
+        await page.waitForTimeout(1000);
+        await page.locator('.ui-datepicker-month').selectOption(dateArr[3].toString());
 
         //Select Day 
         await page.waitForTimeout(1000);
-        await page.getByRole('link', {name: dateArr[6].toString()}).click();
+        await page.getByRole('link', { name: dateArr[8].toString() }).click();
         await page.waitForTimeout(1000);
         await page.locator('id=search_date').click();
         await page.waitForTimeout(1000);
-        await page.getByRole('link', {name: dateArr[8].toString()}).click();
+        await page.getByRole('link', { name: dateArr[6].toString() }).click();
         await page.waitForTimeout(1000);
+
+        //검색 -> 내보내기
+        await page.locator('id=save_btn').click();
+        await page.waitForLoadState('networkidle');
+
+        await check_Number_Logs(page);
+        await page.waitForTimeout(1000);
+
+
+        await page.getByLabel('로그').getByText('VCA 로그').click();
+        await page.waitForTimeout(1000);
+
+        await page.locator('id=save_btn').click();
+        await page.waitForLoadState('networkidle');
+
+        await check_Number_Logs(page);
+        await page.waitForTimeout(1000);
+
+        //메뉴 숨기기 -> 메뉴 보이기
+        await page.locator('id=menuhide_btn').click();
+        await page.waitForTimeout(1000);
+        await page.locator('id=menushow_btn').click();
 
         //For Testing
         //wait new Promise(() => { });
     })
-
-
-
-
 
 })//End Of The Setting Tab

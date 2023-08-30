@@ -159,7 +159,7 @@ export async function delete_InputTxtAfterDClick(page: Page, targetLo: string, i
     await page.locator(targetLocator).click({
         clickCount: 2,
     })
-    
+
     keyPressWithCount(page, 'Backspace', 2);
     await page.waitForTimeout(1000);
 
@@ -208,7 +208,7 @@ export async function randomText(page: Page, len: number) {
     let charlength = upperCharGroup.length;
 
     if (calLength == 0) {
-        let loopLength = (len -2)  / 2;
+        let loopLength = (len - 2) / 2;
         for (let i = 0; i < loopLength; i++) {
             upperCase += upperCharGroup.charAt(Math.floor(Math.random() * charlength));
             lowerCase += lowerCharGroup.charAt(Math.floor(Math.random() * charlength));
@@ -263,6 +263,28 @@ export async function selectCalendarDate(page: Page) {
         let days = [30, newDate.getDate(), 2];
         resutnDateArr.push(days[0], days[1], days[2]);
     }
-    
+
     return resutnDateArr;
+}
+
+export async function check_Number_Logs(page: Page) {
+    //let log_Total = await page.locator('#msg_out > table:nth-child(1) > tbody > tr > td:nth-child(1) > nobr').innerText();
+    let msgTxt = await page.locator('id=msg_out').innerText();
+    //console.log(msgTxt);
+    let log_tr_Total = await page.locator('id=log_table').locator('tr').count().then(function (size) {
+        return size;
+    });
+
+    await console.log(log_tr_Total);
+    
+    await page.waitForTimeout(2000);
+
+    if (msgTxt.includes('로그가 없습니다') || msgTxt == '') {
+        console.log('로그가 없습니다');
+    } else {
+        console.log('로그가 있어요');
+        await page.locator('id=export_btn').click();
+        await page.waitForTimeout(2000);
+
+    }
 }
